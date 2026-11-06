@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DualSense Studio</title>
+  <link rel="stylesheet" href="app.css?v=5" />
+</head>
+<body>
+  <header>
+    <div class="brand" data-i18n="appTitle">DualSense Studio</div>
+    <div class="stat" id="conn"></div>
+    <div class="stat" id="hz"></div>
+    <div class="stat" id="bat"></div>
+    <div class="grow"></div>
+    <button type="button" id="lang" class="ghost"></button>
+    <button type="button" id="stop-all" class="danger" data-i18n="stopAll">Release all</button>
+  </header>
+  <div class="shell">
+    <nav>
+      <button type="button" data-page="live" class="on" data-i18n="live"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/></svg><span data-slot>Live</span></button>
+      <button type="button" data-page="triggers" data-i18n="triggers"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3.2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8V5zm5.8 3H17a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3.2V8z" fill="currentColor"/></svg><span data-slot>Triggers</span></button>
+      <button type="button" data-page="haptics" data-i18n="haptics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M7 7v10M12 4v16M17 7v10M21 10v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-slot>Haptics</span></button>
+      <button type="button" data-page="light" data-i18n="light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-slot>Light</span></button>
+      <button type="button" data-page="audio" data-i18n="audio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 3V7L8 10H5z" fill="currentColor"/><path d="M16 9.5a3.5 3.5 0 0 1 0 5M18.2 7.2a6.5 6.5 0 0 1 0 9.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-slot>Audio</span></button>
+      <button type="button" data-page="alarm" data-i18n="alarm"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="6.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 10v3.2l2 1.4M6 5.5 4 7.2M18 5.5 20 7.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-slot>Alarm</span></button>
+      <button type="button" data-page="device" data-i18n="device"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="12" r="1.1" fill="currentColor"/><circle cx="16" cy="12" r="1.1" fill="currentColor"/></svg><span data-slot>Device</span></button>
+    </nav>
+    <main>
+      <section id="page-live" class="enter">
+        <h1 data-i18n="live">Live</h1>
+        <div class="grid-live">
+          <article>
+            <h2 data-i18n="leftStick">Left stick</h2>
+            <div class="well"><i id="dot-l"></i></div>
+            <p class="nums"><span id="lx"></span><span id="ly"></span></p>
+            <p class="muted"><span data-i18n="drift">Drift</span> <b id="drift-l"></b></p>
+          </article>
+          <article>
+            <h2 data-i18n="rightStick">Right stick</h2>
+            <div class="well"><i id="dot-r"></i></div>
+            <p class="nums"><span id="rx"></span><span id="ry"></span></p>
+            <p class="muted"><span data-i18n="drift">Drift</span> <b id="drift-r"></b></p>
+          </article>
+          <article>
+            <h2 data-i18n="l2">L2</h2>
+            <div class="travel"><i id="bar-l2"></i></div>
+            <p class="nums" id="l2v"></p>
+            <h2 data-i18n="r2">R2</h2>
+            <div class="travel"><i id="bar-r2"></i></div>
+            <p class="nums" id="r2v"></p>
+          </article>
+          <article>
+            <h2 data-i18n="dpad">D-pad</h2>
+            <div class="dpad" id="dpad"></div>
+            <p class="nums" id="hat-label"></p>
+          </article>
+          <article class="span2">
+            <h2 data-i18n="buttons">Buttons</h2>
+            <div class="keys" id="keys"></div>
+            <p><button type="button" id="reset-drift" class="ghost" data-i18n="resetDrift">Reset drift</button></p>
+          </article>
+          <article class="span2">
+            <h2 data-i18n="touchpad">Touchpad</h2>
+            <div class="pad" id="touchpad"><i id="t0"></i><i id="t1"></i></div>
+            <p class="nums" id="touch-read"></p>
+          </article>
+          <article>
+            <h2 data-i18n="gyro">Gyro</h2>
+            <div id="gyro-bars"></div>
+          </article>
+          <article>
+            <h2 data-i18n="accel">Accelerometer</h2>
+            <div id="acc-bars"></div>
+          </article>
+          <article>
+            <h2 data-i18n="battery">Battery</h2>
+            <p class="big" id="bat-pct"></p>
+            <dl id="bat-dl"></dl>
+          </article>
+          <article>
+            <h2 data-i18n="jack">Jack</h2>
+            <dl id="jack-dl"></dl>
+            <h2 data-i18n="echo">Trigger echo</h2>
+            <dl id="echo-dl"></dl>
+          </article>
+          <article class="span2">
+            <h2 data-i18n="identity">Identity</h2>
+            <dl id="id-dl"></dl>
+            <p class="muted"><span data-i18n="seq">Sequence</span> <b id="seq"></b> · <span data-i18n="sensorTs">Sensor time</span> <b id="sts"></b></p>
+          </article>
+          <article class="span2">
+            <h2 data-i18n="calibration">Calibration</h2>
+            <div id="cal"></div>
+          </article>
+          <article class="span2">
+            <h2 data-i18n="rawReport">Raw report</h2>
+            <pre id="raw"></pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="page-triggers" hidden>
+        <h1 data-i18n="triggers">Triggers</h1>
+        <div class="split">
+          <form id="trigger-shell">
+            <label class="check"><input id="tr-split" type="checkbox" /><span data-i18n="splitTriggers">Each trigger</span></label>
+            <p class="muted" id="split-note" hidden data-i18n="splitHelp">Left and right each keep their own effect. Apply both sends both at the same time.</p>
+            <div id="trigger-editors"></div>
+            <div class="row-actions" id="tr-both-actions" hidden>
+              <button type="button" id="tr-apply-both" data-i18n="applyBoth">Apply both</button>
+              <button type="button" id="tr-off-both" class="ghost" data-i18n="offBoth">Both off</button>
+            </div>
+          </form>
+          <template id="trigger-editor">
+            <div class="trigger-editor">
+            <h2 class="editor-title" hidden></h2>
+            <label class="side-field"><span data-i18n="side">Side</span>
+              <select data-field="side">
+                <option value="left" data-i18n="left">Left</option>
+                <option value="right" data-i18n="right">Right</option>
+                <option value="both" data-i18n="both">Both</option>
+              </select>
+            </label>
+            <label><span data-i18n="mode">Mode</span>
+              <select data-field="mode">
+                <optgroup data-i18n="effectOfficial" label="Official">
+                  <option value="off" data-i18n="triggerOff">Off</option>
+                  <option value="feedback" data-i18n="feedback">Feedback</option>
+                  <option value="slope" data-i18n="slope">Slope</option>
+                  <option value="zones" data-i18n="zones">Zones</option>
+                  <option value="weapon" data-i18n="weapon">Weapon</option>
+                  <option value="vibration" data-i18n="vibration">Vibration</option>
+                  <option value="vibration_zones" data-i18n="vibrationZones">Zone vibration</option>
+                </optgroup>
+                <optgroup data-i18n="effectFirmware" label="Firmware">
+                  <option value="bow" data-i18n="bow">Bow</option>
+                  <option value="galloping" data-i18n="galloping">Galloping</option>
+                  <option value="machine" data-i18n="machine">Machine</option>
+                </optgroup>
+              </select>
+            </label>
+            <div class="presets">
+              <button type="button" data-preset="loose" data-i18n="loose">Loose</button>
+              <button type="button" data-preset="firm" data-i18n="firm">Firm</button>
+              <button type="button" data-preset="click" data-i18n="click">Click</button>
+              <button type="button" data-preset="full" data-i18n="fullPress">Full press</button>
+              <button type="button" data-preset="half" data-i18n="halfPress">Half press</button>
+              <button type="button" data-preset="rifle" data-i18n="rifle">Rifle</button>
+            </div>
+            <div data-modes="feedback">
+              <label><span data-i18n="position">Start zone</span><input data-field="position" type="range" min="0" max="9" value="0" /></label>
+              <label><span data-i18n="strength">Strength</span><input data-field="strength" type="range" min="0" max="8" value="4" /></label>
+            </div>
+            <div data-modes="slope">
+              <label><span data-i18n="start">Start zone</span><input data-field="sstart" type="range" min="0" max="8" value="0" /></label>
+              <label><span data-i18n="end">End zone</span><input data-field="send" type="range" min="1" max="9" value="9" /></label>
+              <label><span data-i18n="startStrength">Start strength</span><input data-field="ss" type="range" min="1" max="8" value="1" /></label>
+              <label><span data-i18n="endStrength">End strength</span><input data-field="es" type="range" min="1" max="8" value="8" /></label>
+            </div>
+            <div data-modes="weapon">
+              <label><span data-i18n="start">Start zone</span><input data-field="wstart" type="range" min="2" max="7" value="2" /></label>
+              <label><span data-i18n="end">End zone</span><input data-field="wend" type="range" min="3" max="8" value="5" /></label>
+              <label><span data-i18n="strength">Strength</span><input data-field="wstrength" type="range" min="0" max="8" value="6" /></label>
+            </div>
+            <div data-modes="vibration">
+              <label><span data-i18n="position">Start zone</span><input data-field="vpos" type="range" min="0" max="9" value="0" /></label>
+              <label><span data-i18n="amplitude">Amplitude</span><input data-field="vamp" type="range" min="0" max="8" value="4" /></label>
+              <label><span data-i18n="frequency">Frequency</span><input data-field="vfreq" type="range" min="0" max="255" value="30" /></label>
+            </div>
+            <div data-modes="vibration_zones">
+              <label><span data-i18n="frequency">Frequency</span><input data-field="zfreq" type="range" min="1" max="255" value="30" /></label>
+            </div>
+            <div class="zone-box" data-modes="zones vibration_zones"></div>
+            <div data-modes="bow">
+              <label><span data-i18n="start">Start zone</span><input data-field="bstart" type="range" min="0" max="8" value="1" /></label>
+              <label><span data-i18n="end">End zone</span><input data-field="bend" type="range" min="1" max="8" value="6" /></label>
+              <label><span data-i18n="strength">Strength</span><input data-field="bstrength" type="range" min="1" max="8" value="6" /></label>
+              <label><span data-i18n="snapForce">Snap force</span><input data-field="snap" type="range" min="1" max="8" value="4" /></label>
+            </div>
+            <div data-modes="galloping">
+              <label><span data-i18n="start">Start zone</span><input data-field="gstart" type="range" min="0" max="8" value="0" /></label>
+              <label><span data-i18n="end">End zone</span><input data-field="gend" type="range" min="1" max="9" value="9" /></label>
+              <label><span data-i18n="firstFoot">First foot</span><input data-field="foot1" type="range" min="0" max="6" value="2" /></label>
+              <label><span data-i18n="secondFoot">Second foot</span><input data-field="foot2" type="range" min="1" max="7" value="4" /></label>
+              <label><span data-i18n="frequency">Frequency</span><input data-field="gfreq" type="range" min="1" max="255" value="8" /></label>
+            </div>
+            <div data-modes="machine">
+              <label><span data-i18n="start">Start zone</span><input data-field="mstart" type="range" min="0" max="8" value="0" /></label>
+              <label><span data-i18n="end">End zone</span><input data-field="mend" type="range" min="1" max="9" value="9" /></label>
+              <label><span data-i18n="amplitudeA">Amplitude A</span><input data-field="ampa" type="range" min="0" max="7" value="2" /></label>
+              <label><span data-i18n="amplitudeB">Amplitude B</span><input data-field="ampb" type="range" min="0" max="7" value="5" /></label>
+              <label><span data-i18n="frequency">Frequency</span><input data-field="mfreq" type="range" min="1" max="255" value="20" /></label>
+              <label><span data-i18n="period">Period</span><input data-field="period" type="range" min="0" max="255" value="10" /></label>
+            </div>
+            <div class="zone-preview" data-modes="feedback slope weapon vibration bow galloping machine"></div>
+            <p class="muted mode-note"></p>
+            <p class="muted firmware-note" hidden data-i18n="firmwareNote"></p>
+            <div class="row-actions">
+              <button type="button" class="tr-apply" data-i18n="apply">Apply</button>
+              <button type="button" class="tr-off ghost" data-i18n="off">Off</button>
+            </div>
+            <p class="nums tr-result"></p>
+            </div>
+          </template>
+          <aside>
+            <h2 data-i18n="echo">Trigger echo</h2>
+            <dl id="echo-side"></dl>
+            <h2 data-i18n="l2">L2</h2>
+            <div class="travel"><i id="bar-l2b"></i></div>
+            <h2 data-i18n="r2">R2</h2>
+            <div class="travel"><i id="bar-r2b"></i></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="page-haptics" hidden>
+        <h1 data-i18n="haptics">Haptics</h1>
+        <form class="narrow">
+          <label><span data-i18n="rumbleLeft">Left motor</span><input id="rum-l" type="range" min="0" max="255" value="0" /></label>
+          <label><span data-i18n="rumbleRight">Right motor</span><input id="rum-r" type="range" min="0" max="255" value="0" /></label>
+          <label><span data-i18n="duration">Duration</span><input id="rum-ms" type="range" min="40" max="2000" value="350" /></label>
+          <div class="row-actions">
+            <button type="button" id="rum-hold" data-i18n="hold">Hold</button>
+            <button type="button" id="rum-pulse" data-i18n="pulse">Pulse</button>
+            <button type="button" id="rum-stop" class="ghost" data-i18n="stopRumble">Stop motors</button>
+          </div>
+          <p class="muted" data-i18n="hapticNote"></p>
+          <h2 data-i18n="accel">Accelerometer</h2>
+          <div id="acc-live"></div>
+        </form>
+      </section>
+
+      <section id="page-light" hidden>
+        <h1 data-i18n="light">Light</h1>
+        <form class="narrow">
+          <label class="color-line"><span data-i18n="color">Light bar</span><input id="color" type="color" value="#e0a15a" /></label>
+          <label><span data-i18n="red">Red</span><input id="c-r" type="range" min="0" max="255" value="224" /></label>
+          <label><span data-i18n="green">Green</span><input id="c-g" type="range" min="0" max="255" value="161" /></label>
+          <label><span data-i18n="blue">Blue</span><input id="c-b" type="range" min="0" max="255" value="90" /></label>
+          <label><span data-i18n="brightness">Brightness</span><input id="c-br" type="range" min="0" max="255" value="180" /></label>
+          <fieldset>
+            <legend data-i18n="playerLeds">Player LEDs</legend>
+            <div class="leds" id="leds"></div>
+            <div class="presets" id="player-presets"></div>
+          </fieldset>
+          <label><span data-i18n="muteLed">Mute LED</span>
+            <select id="mute-led">
+              <option value="0" data-i18n="muteOff">Off</option>
+              <option value="1" data-i18n="muteOn">On</option>
+              <option value="2" data-i18n="mutePulse">Pulse</option>
+            </select>
+          </label>
+          <div class="row-actions">
+            <button type="button" id="light-send" data-i18n="sendColor">Send color</button>
+            <button type="button" id="light-off" class="ghost" data-i18n="lightOff">Fade light bar out</button>
+            <button type="button" id="light-release" class="ghost" data-i18n="releaseLight">Release LEDs</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="page-audio" hidden>
+        <h1 data-i18n="audio">Audio</h1>
+        <form class="narrow">
+          <label><span data-i18n="speaker">Speaker volume</span><input id="vol-sp" type="range" min="0" max="255" value="100" /></label>
+          <label><span data-i18n="headVol">Headphone volume</span><input id="vol-hp" type="range" min="0" max="127" value="64" /></label>
+          <label><span data-i18n="micVol">Microphone volume</span><input id="vol-mic" type="range" min="0" max="64" value="32" /></label>
+          <label><span data-i18n="preamp">Speaker preamp</span><input id="vol-pre" type="range" min="0" max="7" value="2" /></label>
+          <label><span data-i18n="path">Output path</span>
+            <select id="vol-path">
+              <option value="speaker" data-i18n="pathSpeaker">Internal speaker</option>
+              <option value="headphone" data-i18n="pathHead">Headphone jack</option>
+            </select>
+          </label>
+          <label class="check"><input id="mic-mute" type="checkbox" /><span data-i18n="micMuteHw">Mute microphone in hardware</span></label>
+          <div class="row-actions">
+            <button type="button" id="audio-send" data-i18n="sendAudio">Send audio settings</button>
+          </div>
+          <h2 data-i18n="testTone">Test tone</h2>
+          <label><span data-i18n="frequency">Frequency</span><input id="tone-f" type="range" min="80" max="2000" value="440" /></label>
+          <label><span data-i18n="duration">Duration</span><input id="tone-ms" type="range" min="80" max="2000" value="400" /></label>
+          <button type="button" id="tone-play" data-i18n="play">Play</button>
+          <h2 data-i18n="micLevel">Microphone level</h2>
+          <div class="meter"><i id="mic-bar"></i></div>
+          <p class="muted" id="audio-name"></p>
+          <dl id="jack-audio"></dl>
+        </form>
+      </section>
+
+      <section id="page-alarm" hidden>
+        <h1 data-i18n="alarm">Alarm</h1>
+        <form class="narrow" id="alarm-form">
+          <p class="big" id="alarm-state"></p>
+          <label><span data-i18n="alarmKind">Kind</span>
+            <select id="al-kind">
+              <option value="countdown" data-i18n="countdown">Countdown</option>
+              <option value="clock" data-i18n="clock">Clock time</option>
+            </select>
+          </label>
+          <div data-alarm="countdown">
+            <label><span data-i18n="seconds">Seconds</span><input id="al-sec" type="number" min="1" max="86400" value="15" /></label>
+          </div>
+          <div data-alarm="clock" hidden>
+            <label><span data-i18n="hour">Hour</span><input id="al-h" type="number" min="0" max="23" value="7" /></label>
+            <label><span data-i18n="minute">Minute</span><input id="al-m" type="number" min="0" max="59" value="0" /></label>
+          </div>
+          <fieldset>
+            <legend data-i18n="channels">Channels</legend>
+            <label class="check"><input type="checkbox" id="ch-sp" checked /><span data-i18n="chSpeaker">Speaker tone</span></label>
+            <label class="check"><input type="checkbox" id="ch-rl" checked /><span data-i18n="chRumbleL">Left rumble</span></label>
+            <label class="check"><input type="checkbox" id="ch-rr" checked /><span data-i18n="chRumbleR">Right rumble</span></label>
+            <label class="check"><input type="checkbox" id="ch-li" checked /><span data-i18n="chLight">Light bar</span></label>
+            <label class="check"><input type="checkbox" id="ch-pl" /><span data-i18n="chPlayer">Player LEDs</span></label>
+            <label class="check"><input type="checkbox" id="ch-tl" checked /><span data-i18n="chLeft">Left trigger</span></label>
+            <label class="check"><input type="checkbox" id="ch-tr" checked /><span data-i18n="chRight">Right trigger</span></label>
+          </fieldset>
+          <label class="color-line"><span data-i18n="alarmColor">Alarm color</span><input id="al-color" type="color" value="#dc3018" /></label>
+          <label><span data-i18n="alarmTrigger">Alarm trigger</span>
+            <select id="al-tmode">
+              <option value="feedback" data-i18n="firm">Firm</option>
+              <option value="vibration" data-i18n="vibration">Vibration</option>
+              <option value="weapon" data-i18n="click">Click</option>
+            </select>
+          </label>
+          <label><span data-i18n="strength">Strength</span><input id="al-str" type="range" min="1" max="8" value="8" /></label>
+          <label><span data-i18n="frequency">Frequency</span><input id="al-tone" type="range" min="200" max="2000" value="880" /></label>
+          <label><span data-i18n="snoozeFor">Snooze seconds</span><input id="al-sn" type="number" min="5" max="3600" value="60" /></label>
+          <div class="row-actions">
+            <button type="button" id="al-arm" data-i18n="arm">Arm</button>
+            <button type="button" id="al-snooze" class="ghost" data-i18n="snooze">Snooze</button>
+            <button type="button" id="al-stop" class="danger" data-i18n="stopAlarm">Stop alarm</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="page-device" hidden>
+        <h1 data-i18n="device">Device</h1>
+        <article class="narrow">
+          <p class="muted" data-i18n="deviceHelp"></p>
+          <dl id="dev-dl"></dl>
+          <p><span data-i18n="lastError">Last error</span></p>
+          <pre id="dev-err"></pre>
+          <div class="row-actions">
+            <button type="button" id="dev-re" data-i18n="reconnect">Reconnect</button>
+            <button type="button" id="dev-free" class="danger" data-i18n="stopAll">Release all</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <p id="toast" hidden></p>
+  <script src="app.js?v=5"></script>
+</body>
+</html>
